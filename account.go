@@ -20,3 +20,11 @@ func (a TwitterApi) GetSelf(v url.Values) (u User, err error) {
 	a.queryQueue <- query{a.baseUrl + "/account/verify_credentials.json", v, &u, _GET, response_ch}
 	return u, (<-response_ch).err
 }
+
+func (a TwitterApi) UploadProfileImage(base64String string) (u User, err error) {
+	v := url.Values{}
+	v.Set("image", base64String)
+	response_ch := make(chan response)
+	a.queryQueue <- query{a.baseUrl + "/account/update_profile_image.json", v, &u, _POST, response_ch}
+	return u, (<-response_ch).err
+}
